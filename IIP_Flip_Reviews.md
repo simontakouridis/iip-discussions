@@ -29,12 +29,13 @@ The long session UI for the flip reporting round will be altered to include extr
 The information modal for “AI resistance score?” includes the following description:
 > *An ideal AI resistant flip:*
 > - *has a meaningful storyline that encompasses all images in the flip.*
-> - *is free of elements that make the image order predictable without knowing the story.*
+> - *is free of elements or patterns that make the image order predictable without knowing the story.*
 
 The information modal for “Keyword usage score?” includes the following description:
 > *A flip with ideal keyword usage:*
 > - *has both keywords well integrated as subject matter of the storyline.*
 > - *is difficult to be re-used with another set of keywords.*
+> - *is free of a pattern that is reusable with another set of keywords.*
 
 The reviewer is able to either leave the scorings blank, or select 1, 2 or 3 for each of the criteria. The reviewer is also provided a note on top of the review selections as follows:
 > *All review options presented to you must be selected for the chance of a reviewer reward.*
