@@ -38,7 +38,7 @@ The information modal for “Keyword usage score?” includes the following desc
 > - *is free of a pattern that is reusable with another set of keywords.*
 
 The reviewer is able to either leave the scorings blank, or select 1, 2 or 3 for each of the criteria. The reviewer is also provided a note on top of the review selections as follows:
-> *All review options presented to you must be selected for the chance of a reviewer reward.*
+> *All review options presented to you must be selected with accuracy otherwise severe penalties may apply.*
 
 Flips in the long sessions are randomly shuffled and displayed in a unique order for each of the committee members, so as not to introduce any perverse Schelling points of consensus based on flip display order e.g. everyone selecting the first flip for reporting.
 
@@ -119,8 +119,8 @@ Depending on committee sizes, each flip in the epoch is expected to have one or 
 
 1. The median and average grade for each flip is calculated (using human gradings only).
 2. The median and average grade for each flip is calculated (using non-human-validator gradings only).
-3. The final median grade for the flip is calculated as follows: `Final_Median_Grade = ((2 * Human_Median_Grade) + Non-Human_Median_Grade) / 3`
-4. The final average grade for the flip is calculated as follows: `Final_Average_Grade = ((2 * Human_Average_Grade) + Non-Human_Average_Grade) / 3`
+3. The final median grade for the flip is calculated as follows: `Final_Median_Grade = ((2 * Human_Median_Grade) + Non_Human_Median_Grade) / 3`
+4. The final average grade for the flip is calculated as follows: `Final_Average_Grade = ((2 * Human_Average_Grade) + Non_Human_Average_Grade) / 3`
 5. If in the very rare case that no grade was awarded to a flip, the flip receives a “benefit of the doubt” mediocre grading of 2 (Both median and average).
 6. The flips are sorted, first by the final median grade descending, then by the final average grade descending, then by committee size descending, then by flip submission time ascending.
 
@@ -188,7 +188,7 @@ A couple of edge cases can result in rewards when consensus was not acheived for
 2. A committee of just 1 member is eligible to recieve a share of the low accuracy rewards out of fairness.
 <br/>
 
-### Flip Author Penalties and Rewards
+### Flip Author Identity Penalties and Rewards
 
 It is a systemic risk to only deny rewards for consistent poor quality flip authors, because there will be some authors that are not incentivised by rewards, but rather by destroying the network. As such, going forth the flip producers who consistently produce the poorest quality flips, and who also represent a systemic risk to the network, will be severely penalised. Conversely, those authors that consistently produce the best quality flips, will be exceptionally rewarded. The author penalties and rewards will occur in two independent time horizons, as described:
 
@@ -198,13 +198,49 @@ It is a systemic risk to only deny rewards for consistent poor quality flip auth
 
 1. For each flip author, the median and average grade is calculated for their submitted flips for the epoch.
 2. The authors are sorted, first by the median grade descending, then by the average grade descending, then by number of flips submitted ascending, then by last flip submission time ascending.
+3. The bottom 5% of authors in that list are determined to be the worst flip authors.
+4. The top 5% of authors in that list are determined to be the best flip authors.
+
+Edge cases:
+- Some of the worst flip authors may also be in the pool of worst reviewers for that epoch (See Reviewer Penalties and Rewards section below). In that case, the validation rewards stripped are split in half, with one half going to rewards pool for the best flip authors, and the other half going to rewards pool for the best reviewers.
+- Some of the best flip authors may also be determined to be in the worst reviewers camp. In such a case, the identity will be disqualified from recieving the flip author identity rewards. And as such, the pool of flip author identity rewards will be shared by a pool of less than 5% of the best flip authors.
 
 **“Per 5 epoch” flip author penalties and rewards**
 
 The “per 5 epoch” author penalties and rewards are calculated with the exact same method as the “per epoch” author penalties and rewards, except for the following differences:
 
-1. The calculations, penalties and rewards are performed at every 5th epoch interval, e.g. Epoch 95, 100, 105 etc.
+1. The calculations, penalties and rewards are performed at every 5th epoch interval, e.g. Epoch 95, 100, 105 etc. These epochs are aligned with the “Per 5 epoch” reviewer penalties and rewards (See Reviewer Identity Penalties and Rewards section below).
 2. The calculations include all of the submitted flips for each author over the past 5 epochs.
+<br/>
+
+### Reviewer Identity Penalties and Rewards
+
+Like with flip authoring, it is a systemic risk to only deny rewards for consistently inaccurate flip reviews. As such, reviewers will be penalised when consistently providing inaccurate reviews, and conversely will be rewarded when providing consistently accurate reviews.
+
+**“Per epoch” reviewer penalties and rewards**
+
+5% of the least accurate reviewers for the current epoch will not pass validation. Any validation rewards that were awarded to these reviewers for that epoch are stripped, pooled and equally shared amongst 5% of the most accurate flip reviewers. The least and most accurate reviewers for the epoch are determined as such:
+
+1. For each reviewer, the number of inaccurate flip reviews are determined for the epoch. An inaccurate flip review is one that misses the awarded consensus scoring category by more than one grading.
+2. All human reviewers are sorted, first the number inaccurate flip reviews descending, then by identity age ascending, then by SubmitLongAnswersTx submission time ascending.
+3. All non-human-validator reviewers are sorted, first the number inaccurate flip reviews descending, then by identity age ascending, then by SubmitLongAnswersTx submission time ascending.
+4. The human cutoff number of identities for reviewer penalties and rewards is calculated with the following equation: `Human_Cutoff_Number = 0.05 * ( Total_Validators_In_Epoch / ( 1 + ( Total_Non_Human_Validators_In_Epoch / ( 2 * Total_Humans_In_Epoch ) ) ) )`.
+5. The non-human-validator cutoff number of identities for reviewer penalties and rewards is calculated with the following equation: `Non_Human_Cutoff_Number = 0.05 * ( Total_Validators_In_Epoch / ( 1 + ( ( 2 * Total_Humans_In_Epoch ) / Total_Non_Human_Validators_In_Epoch ) ) )`.
+6. All reviewers in the human sorted list that are below the Human_Cutoff_Number are determined to be the worst human reviewers for the epoch. For example, if the Human_Cutoff_Number calculated was 60 identities, then the bottom 60 identities in the human sorted list are considered the worst human human reviewers of that epoch. Conversely, all reviewers in the human sorted list that are above the Human_Cutoff_Number are determined to be the best human reviewers for the epoch.
+7. The same process as in point 6 above (albeit with the non-human-validator sorted list) is used to determine the worst and best non-human-validator reviewers.
+8. The 5% worst reviewers for the epoch are the combined worst human and non-human-validator reviewers.
+9. The 5% best reviewers for the epoch are the combined best human and non-human-validator reviewers.
+
+Edge cases:
+- Some of the worst reviewers may also be in the pool of worst flip authors for that epoch. In that case, the validation rewards stripped are split in half, with one half going to rewards pool for the best reviewers, and the other half going to rewards pool for the best flip authors.
+- Some of the best reviewers may also be determined to be in the worst flip authors camp. In such a case, the identity will be disqualified from recieving the reviewer identity rewards. And as such, the pool of reviewer identity rewards will be shared by a pool of less than 5% of the best reviewers.
+
+**“Per 5 epoch” reviewer penalties and rewards**
+
+The “per 5 epoch” reviewer penalties and rewards are calculated with the exact same method as the “per epoch” reviewer penalties and rewards, except for the following differences:
+
+1. The calculations, penalties and rewards are performed at every 5th epoch interval, e.g. Epoch 95, 100, 105 etc. These epochs are aligned with the “Per 5 epoch” flip author penalties and rewards.
+2. The calculations include all of the reviewed flips for each reviewer over the past 5 epochs.
 <br/>
 
 ### Validation Rewards Structure
@@ -246,7 +282,7 @@ The current protocol has measures in place to enforce flip quality, such as rand
 
 - A lack of clarity on what constitutes a reportable flip which contributes to both false negatives and false positives. In many instances poor quality flips are technically valid flips as per the reporting guidance provided. Worse still, expanding on the guidance is not expected to improve things because poor quality flips are in a spectrum of quality and thus what might be reportable to one person, might be acceptable to another. The guidance would need to be massively expanded to include all variations and examples of reportability, which would simply be impossible for most reviewers to accurately follow.
 - The current implementation directly couples the successful reporting of a flip, to the rewards associated with reporting the flip, and moreover to the loss of rewards associated with the authoring of that flip. These direct couplings create a rigidity in the incentive structure making it impossible to effectively tailor incentives and penalisations. Current reporting deals with this rigidity by limiting the number of reports one can give during the long session to 1/3, as a compromise between having enough reports to avoid having false negatives, but not too many reports to avoid having false positives. Though this has proved to be an impossible balance to accommodate.
-- Various other reasons such as allowing an identity to consistently submit poor quality flips, allowing inexperienced users to report flips, and having insufficient flip rewards and reviewer rewards.
+- Various other reasons such as allowing an identity to consistently submit poor quality flips, allowing identities to consistently make inaccurate flip reports, allowing inexperienced users to report flips, and having insufficient flip rewards and reviewer rewards.
 
 These failures have resulted in a trajectory of lower overall flip quality where the current state of affairs is in disarray.
 
@@ -256,7 +292,7 @@ The solution here also removes the direct coupling of review committee consensus
 
 With this solution, flip reviews can be rewarded for accuracy as determined by the level of agreement with other reviewers. This incentivises reviewers to not only grade flips, but to also be as accurate as possible so as to maximise the chance for rewards. Over time, the reviewers will have a refined intuitive sense of the deserving score for each flip that they encounter.
 
-Moreover, this solution includes a massive increase in both flip rewards and reviewer rewards, which is needed to incentivise quality flip authoring, and accurate flip scoring. However, rewards alone are insufficient to ensure a trajectory of continual network flip quality improvements, for example abusers who want to destroy the network are not incentivised by rewards for good behaviour. Hence, penalties for consistent poor quality flip submission is included to protect the network from such abuse.
+Moreover, this solution includes a massive increase in both flip rewards and reviewer rewards, which is needed to incentivise quality flip authoring, and accurate flip scoring. However, rewards alone are insufficient to ensure a trajectory of continual network flip quality improvements, for example abusers who want to destroy the network are not incentivised by rewards for good behaviour. Hence, penalties for consistent poor quality flip submissions and consistent inaccurate flip reviews is included to protect the network from such abuse.
 <br/>
 
 ## Backward Compatibility
