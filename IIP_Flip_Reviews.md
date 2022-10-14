@@ -28,7 +28,7 @@ The long session UI for the flip reporting round will be altered to include extr
 
 The information modal for “AI resistance score?” includes the following description:
 > *An ideal AI resistant flip:*
-> - *has a meaningful storyline that encompasses all images in the flip.*
+> - *has a unique and meaningful storyline that encompasses all images in the flip.*
 > - *is free of elements or patterns that make the image order predictable without knowing the story.*
 
 The information modal for “Keyword usage score?” includes the following description:
