@@ -303,5 +303,5 @@ This change requires a hard fork.
 ## Security Considerations
 
 - This is a complex and nuanced proposal that fundamentally alters various aspects of the protocol and incentives. As such, a great deal of care needs to be taken during programming, testing and release in order to not introduce bugs.
-- Low participation (high abstentions) in flip reviews has the potential to produce insufficient gradings of flips, which would have all sorts of negative flow-on effects. This has been mitigated by altering committee consensus to plurality (as opposed to absolute majority), significantly increasing reviewer rewards in general, and also by providing low accuracy reviewer rewards to ensure a level of incentive for merely participating with a reasonable level of accuracy.
+- Low participation (high abstentions) in flip reviews has the potential to produce insufficient gradings of flips, which would have all sorts of negative flow-on effects. This has been mitigated by altering committee consensus to plurality (as opposed to absolute majority), significantly increasing reviewer rewards in general, and also having penalties for consistent inaccurate reviews (which include abstentions).
 <br/>
